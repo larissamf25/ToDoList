@@ -1,0 +1,57 @@
+* {
+  margin: 0;
+}
+
+.body {
+  background-image: linear-gradient(to bottom right, rgb(9, 236, 252), rgb(6, 248, 127));
+}
+
+header {
+  text-align: center;
+  padding: 20px;
+}
+
+.input-task {
+  padding: 20px;
+}
+
+.button {
+  background-color: white;
+  border: color 1px solid;
+  border-radius: 7px;
+}
+
+hr {
+  width: 500px;
+  margin: 0 auto;
+}
+
+.tasks-display {
+  text-align: center;
+}
+
+.tasks-list {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 20px;
+}
+
+.tasks-list li {
+  list-style-type: none;
+}
+
+.task {
+  border: 1px black solid;
+  border-radius: 5px;
+  margin: 5px;
+  text-align: center;
+}
+
+.task:hover {
+  box-shadow: -10px -10px 5px white;
+}
+
+footer {
+  text-align: center;
+  padding: 20px;
+}
