@@ -1,0 +1,20 @@
+{
+  "tasks": [
+    {
+      "id": 1,
+      "title": "primeira tarefa",
+      "description": "esta é minha primeira tarefa",
+      "isConcluded": false,
+      "category": "easy",
+      "deadline": "06/17/2022"
+    },
+    {
+      "id": 2,
+      "title": "segunda tarefa",
+      "description": "esta é minha segunda tarefa",
+      "isConcluded": true,
+      "category": "hard",
+      "deadline": "10/17/2023"
+    }
+  ] 
+}

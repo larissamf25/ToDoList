@@ -3,6 +3,23 @@ import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import AddTask from './components/AddTask';
 import ShowTask from './components/ShowTask';
+import { Button, Form } from 'react-bootstrap';
+// import { useEffect, useState } from 'react';
+// import { api } from './services/api';
+
+// export function Tasks() {
+//   const [tasks, setPosts] = useState([]);
+//   useEffect(() => {
+//     api.get('/tasks').then((response) => {
+//       setPosts(response.data)
+//     })
+//   }, [])
+//   return (<ul>
+//     {tasks.map((task) => {
+//       return <ShowTask title={task.title} description={task.description} />
+//     })}
+//   </ul>)
+// }
 
 class App extends React.Component {
   constructor() {
@@ -11,11 +28,24 @@ class App extends React.Component {
       title: '',
       description: '',
       isConcluded: false,
-      category: '',
+      category: 'Easy',
       deadline: new Date(this),
       order: '',
       myTasks: [],
     }
+  }
+
+  componentDidMount = () => {
+    window.addEventListener('load', this.handleLoad);
+  }
+
+  componentWillUnmount = () => { 
+    window.removeEventListener('load', this.handleLoad)  
+  }
+
+  handleLoad = () => {
+    const myTasks = JSON.parse(localStorage.getItem("myTasks"));
+    this.setState({ myTasks: myTasks });
   }
 
   handleChange = ({ target }) => {
@@ -24,26 +54,91 @@ class App extends React.Component {
     this.setState({ [name]: value });
   }
 
-  AddTask = (event) => {
-    event.preventDefault();
+  AddTask = () => {
     const { title, description, isConcluded, category, deadline } = this.state;
     const newTask = { title, description, isConcluded, category, deadline };
     this.setState((previouState) => ({
       title: '',
       description: '',
       isConcluded: false,
-      category: '',
+      category: 'Easy',
       deadline: new Date(this),
       myTasks: [newTask, ...previouState.myTasks],
-    }))
+    }));
   }
 
   orderCards = ({ target }) => {
     const { value } = target;
-    this.setState((previouState) => ({
-      order: value,
-      myTasks: previouState.myTasks.sort((a, b) => a[value] - b[value]),
+    if (value === 'title') {
+      this.setState(({ myTasks }) => ({
+        order: value,
+        myTasks: myTasks.sort((a, b) => {
+          let fa = a[value].toLowerCase();
+          let fb = b[value].toLowerCase();
+          return (fa < fb) ? -1 : 1;
+        })
+      }));
+    } else if (value === 'category') {
+      this.setState(({ myTasks }) => ({
+        order: value,
+        myTasks: [
+          ...myTasks.filter((task) => task[value] === 'Priority'),
+          ...myTasks.filter((task) => task[value] === 'Urgent'),
+          ...myTasks.filter((task) => task[value] === 'Hard'),
+          ...myTasks.filter((task) => task[value] === 'Easy')],
+      }));
+    } else if (value === 'deadline') {
+      this.setState(({ myTasks }) => ({
+        order: value,
+        myTasks: myTasks.sort((a, b) => {
+          const dateA = a[value].split('-');
+          const dateB = b[value].split('-');
+          if (Number(dateA[0]) !== Number(dateB[0])) return Number(dateA[0]) - Number(dateB[0]);
+          if (Number(dateA[1]) !== Number(dateB[1])) return Number(dateA[1]) - Number(dateB[1]);
+          return Number(dateA[2]) - Number(dateB[2]);
+        })
+      }));
+    }
+  }
+
+  filterCards = ({ target }) => {
+    const { value } = target;
+    if (value === 'Concluded') {
+      this.setState(({ myTasks }) => ({
+        myTasks: myTasks.filter((task) => task.isConcluded === true),
+      }));
+    } else {
+      this.setState(({ myTasks }) => ({
+        myTasks: myTasks.filter((task) => task.isConcluded === false),
+      }));
+    }
+  }
+
+  editTask = (task) => {
+    const { title, description, isConcluded, category, deadline } = task;
+    this.setState(() => ({
+      title: title,
+      description: description,
+      isConcluded: isConcluded,
+      category: category,
+      deadline: deadline,
+    }), () => this.deleteTask(title));
+  }
+
+  deleteTask = (title) => {
+    this.setState(({ myTasks }) => ({
+      myTasks: myTasks.filter((task) => task.title !== title),
     }));
+  }
+
+  clearTasks = () => {
+    this.setState({ myTasks: []});
+  }
+
+  saveTasks = () => {
+    const { myTasks } = this.state;
+    localStorage.setItem('myTasks', JSON.stringify(myTasks));
+    console.log(localStorage.getItem('myTasks'));
   }
 
   render() {
@@ -52,6 +147,7 @@ class App extends React.Component {
       <div className="body">
         <header>My ToDo List</header>
         <section className="input-task">
+          Add you task here!
           <AddTask
             title={ title }
             description={ description }
@@ -60,11 +156,10 @@ class App extends React.Component {
             deadline={ deadline }
             handleChange={ this.handleChange }
           />
-          <button className="button" type="button" onClick={ this.AddTask }>Add</button>
+          <Button variant="primary" className="button" type="button" onClick={ this.AddTask }>Add</Button>
         </section>
-        <hr />
         <section className="tasks-display">
-          <label htmlFor="order-input">
+          <Form.Label htmlFor="order-input">
             Order by
             <select
               id="order-input"
@@ -74,15 +169,57 @@ class App extends React.Component {
               onChange={ this.orderCards }
             >
               <option> </option>
-              <option>Title</option>
-              <option>Category</option>
-              <option>Deadline</option>
+              <option>title</option>
+              <option>category</option>
+              <option>deadline</option>
           </select>
-          </label>
+          </Form.Label>
+          <br />
+          <Form.Label>
+            Filter by conclusion
+            <select
+              id="order-input"
+              name="cardRare"
+              type="select"
+              onChange={ this.filterCards }
+            >
+            <option></option>
+            <option>Concluded</option>
+            <option>Not concluded</option>
+            </select>
+          </Form.Label>
+          <br />
+          <p className="notes">*click on the task to edit</p>
           <br />
           <ul className="tasks-list">
-            { myTasks.map((task) => <li key={ task.title }><ShowTask data={ task }/></li>) }
+            { myTasks.map((task, index) => {
+              return <li
+                key={ task.title }
+                onClick={ () => this.editTask(task) }
+              >
+              <div className="task">
+                <ShowTask data={ task } index={ index }/>
+                <Button
+                  onClick={ () => this.deleteTask(task.title) }
+                >
+                  Delete
+                </Button>
+              </div>
+            </li>
+            }) }
           </ul>
+          <Button
+            onClick={ this.clearTasks }
+            style={{ margin: '5px' }}
+          >
+            Clear
+          </Button>
+          <Button
+            onClick={ this.saveTasks }
+            style={{ margin: '5px' }}
+          >
+            Save
+          </Button>
         </section>
         <footer>by @Larissa Menezes, 2022</footer>
       </div>

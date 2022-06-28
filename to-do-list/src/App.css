@@ -1,38 +1,55 @@
 * {
   margin: 0;
+  text-align: center;
+  font-family: 'Courier New', Courier, monospace;
+  /* Georgia, 'Times New Roman', Times, serif; */
 }
 
 .body {
   background-image: linear-gradient(to bottom right, rgb(9, 236, 252), rgb(6, 248, 127));
 }
 
+@keyframes animation {
+  0% {
+      transform: translateY(0%);
+      opacity: 1;
+  }
+  99% {
+      opacity: 1;
+  }
+  100% {
+      transform: translateY(-1200%);
+  }
+}
+
 header {
   text-align: center;
   padding: 20px;
+  font-size: 1.3em;
+  font-weight: 700;
 }
 
 .input-task {
-  padding: 20px;
-}
-
-.button {
-  background-color: white;
-  border: color 1px solid;
-  border-radius: 7px;
-}
-
-hr {
-  width: 500px;
+  max-width: 500px;
   margin: 0 auto;
+  padding: 20px;
+  border-radius: 12px;
+  background-color: white;
+}
+
+.notes {
+  font-size: 0.7em;
 }
 
 .tasks-display {
   text-align: center;
+  margin-top: 30px;
 }
 
 .tasks-list {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   padding: 20px;
 }
 
@@ -41,14 +58,63 @@ hr {
 }
 
 .task {
-  border: 1px black solid;
-  border-radius: 5px;
+  padding: 20px;
+  border-radius: 12px;
+  background-color: white;
   margin: 5px;
-  text-align: center;
+  min-width: 250px;
+}
+
+.task .task-title {
+  font-weight: 700;
+}
+
+.task .task-description {
+  font-style: italic;
 }
 
 .task:hover {
-  box-shadow: -10px -10px 5px white;
+  box-shadow: 0 0 15px black;
+}
+
+.task {
+  transition: all 1s ease-in-out;
+}
+
+.task .Priority {
+  background-color: rgb(211, 119, 119);
+  padding: 5px;
+  border-radius: 4px;
+  width: 80px;
+  margin: auto;
+}
+
+.task .Urgent {
+  background-color: rgb(236, 177, 87);
+  padding: 5px;
+  border-radius: 4px;
+  width: 80px;
+  margin: auto;
+}
+
+.task .Hard {
+  background-color: rgb(114, 180, 224);
+  padding: 5px;
+  border-radius: 4px;
+  width: 80px;
+  margin: auto;
+}
+
+.task .Easy {
+  background-color: rgb(127, 211, 119);
+  padding: 5px;
+  border-radius: 4px;
+  width: 80px;
+  margin: auto;
+}
+
+.task .task-deadline {
+  margin-top: 10px;
 }
 
 footer {
