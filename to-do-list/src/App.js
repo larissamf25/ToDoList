@@ -138,7 +138,6 @@ class App extends React.Component {
   saveTasks = () => {
     const { myTasks } = this.state;
     localStorage.setItem('myTasks', JSON.stringify(myTasks));
-    console.log(localStorage.getItem('myTasks'));
   }
 
   render() {
@@ -159,6 +158,7 @@ class App extends React.Component {
           <Button variant="primary" className="button" type="button" onClick={ this.AddTask }>Add</Button>
         </section>
         <section className="tasks-display">
+          <header>List of tasks</header>
           <Form.Label htmlFor="order-input">
             Order by
             <select
